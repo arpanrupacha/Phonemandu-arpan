@@ -1,18 +1,9 @@
 import { Button } from "@/components/ui/button";
 import {
-  Airplay,
-  BabyIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CloudLightning,
-  Heater,
-  Images,
   Laptop,
-  Phone,
-  ShoppingBasket,
   Tablet,
-  UmbrellaIcon,
-  WashingMachine,
   Headphones,
   Smartphone,
 } from "lucide-react";
