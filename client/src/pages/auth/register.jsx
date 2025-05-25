@@ -5,7 +5,6 @@ import { registerUser } from "@/store/auth-slice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from '@react-oauth/google';
 
 const initialState = {
   userName: "",
@@ -36,13 +35,6 @@ function AuthRegister() {
     });
   }
 
-  const handleGoogleLogin = (credentialResponse) => {
-    // Send credentialResponse.credential (JWT) to your backend for verification
-    // Example: dispatch(googleLogin(credentialResponse.credential))
-  };
-
-  console.log(formData);
-
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
       <div className="text-center">
@@ -65,12 +57,6 @@ function AuthRegister() {
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
-      />
-      <GoogleLogin
-        onSuccess={handleGoogleLogin}
-        onError={() => {
-          // handle error
-        }}
       />
     </div>
   );

@@ -161,7 +161,6 @@ export const filterOptions = {
     { id: "laptops", label: "laptops" },
     { id: "tablets", label: "Tablets" },
     { id: "accessories", label: "Accessories" },
-    // { id: "footwear", label: "Footwear" },
   ],
   brand: [
     { id: "Samsung", label: "Samsung" },

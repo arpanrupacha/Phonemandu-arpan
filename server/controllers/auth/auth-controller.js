@@ -1,7 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
 const User = require("../../models/User");
 
 //register
@@ -99,51 +97,19 @@ const logoutUser = (req, res) => {
 };
 
 //auth middleware
-const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token)
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
 
+const authMiddleware = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
   try {
     const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
     req.user = decoded;
     next();
-  } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
 
-const googleLogin = async (req, res) => {
-  const { credential } = req.body;
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: 'YOUR_GOOGLE_CLIENT_ID',
-    });
-    const payload = ticket.getPayload();
-    // payload.email, payload.name, etc.
-
-    // Check if user exists, else create
-    let user = await User.findOne({ email: payload.email });
-    if (!user) {
-      user = await User.create({
-        userName: payload.name,
-        email: payload.email,
-        password: '', // or a random string, since Google users don't need a password
-      });
-    }
-    // Generate your JWT and set cookie/session as usual
-    // ...
-    res.json({ success: true, user });
-  } catch (e) {
-    res.status(401).json({ success: false, message: "Google login failed" });
-  }
-};
-
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware, googleLogin };
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware };

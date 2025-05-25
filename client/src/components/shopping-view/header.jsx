@@ -24,11 +24,11 @@ import { useEffect, useState } from "react";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { fetchFavorites } from "@/store/shop/favorite-slice/favorite-slice";
 import { useToast } from "../ui/use-toast";
-import ShoppingProductTile from "./product-tile"; // Import your product card
+import ShoppingProductTile from "./product-tile";
 import phonemandu from "../../assets/phonemandulogo.png";
 import { Sun, Moon } from "lucide-react";
 
-function MenuItems() {
+function MenuItems({ onClick }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,22 +51,25 @@ function MenuItems() {
           new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
         )
       : navigate(getCurrentMenuItem.path);
+
+    if (onClick) onClick();
   }
 
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
-        <Label
+        <span
           onClick={() => handleNavigate(menuItem)}
           className="text-sm font-medium cursor-pointer"
           key={menuItem.id}
         >
           {menuItem.label}
-        </Label>
+        </span>
       ))}
     </nav>
   );
 }
+
 function HeaderRightContent() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -109,7 +112,8 @@ function HeaderRightContent() {
   }, [dispatch, user?.id]);
 
   return (
-    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+    <div className="flex flex-row items-center gap-2 sm:gap-4">
+      {/* Cart */}
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
           onClick={() => setOpenCartSheet(true)}
@@ -132,7 +136,7 @@ function HeaderRightContent() {
           }
         />
       </Sheet>
-
+      {/* Wishlist */}
       <Sheet open={openWishlistSheet} onOpenChange={() => setOpenWishlistSheet(false)}>
         <Button
           onClick={() => setOpenWishlistSheet(true)}
@@ -168,7 +172,7 @@ function HeaderRightContent() {
           )}
         </SheetContent>
       </Sheet>
-
+      {/* User Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
@@ -210,36 +214,20 @@ function HeaderRightContent() {
 
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  // const [theme, setTheme] = useState(
-  //   localStorage.getItem("theme") || "light"
-  // );
-
-  // useEffect(() => {
-  //   if (theme === "dark") {
-  //     document.documentElement.classList.add("dark");
-  //   } else {
-  //     document.documentElement.classList.remove("dark");
-  //   }
-  //   localStorage.setItem("theme", theme);
-  // }, [theme]);
-
-  // const toggleTheme = () => {
-  //   setTheme(theme === "light" ? "dark" : "light");
-  // };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b-4 bg-background dark:bg-darkBackground">
-      <div className="flex h-20 items-center justify-between px-6 md:px-10">
+      <div className="flex h-20 items-center justify-between px-4 sm:px-6 md:px-10">
         {/* Logo */}
         <Link to="/shop/home" className="flex items-center gap-2">
           <img
             src={phonemandu}
             alt="Phonemandu Logo"
-            className="h-12 w-auto"
+            className="h-10 w-auto"
           />
         </Link>
 
-        {/* Menu Items */}
+        {/* Desktop Nav */}
         <nav className="hidden lg:flex gap-12">
           {shoppingViewHeaderMenuItems.map((menuItem) => (
             <Link
@@ -253,9 +241,24 @@ function ShoppingHeader() {
           ))}
         </nav>
 
+        {/* Mobile Hamburger */}
+        <div className="lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="w-6 h-6" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-3/4 max-w-xs p-4">
+              <MenuItems />
+            </SheetContent>
+          </Sheet>
+        </div>
+
         {/* Right Section */}
-        <div className="flex items-center gap-4">
-          {/* Theme Toggle Button */}
+        <div className="flex flex-row items-center gap-2 sm:gap-4">
+          {/* Theme Toggle Button (optional) */}
           {/* <button
             onClick={toggleTheme}
             className="p-2 rounded-md bg-gray-200 dark:bg-gray-700"

@@ -181,7 +181,7 @@ function ShoppingHome() {
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
             <div
-              key={index}
+              key={slide._id || index} // <-- Add key here
               className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
             >
@@ -252,6 +252,7 @@ function ShoppingHome() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {brandsWithIcon.map((brandItem) => (
               <Card
+                key={brandItem.id} // <-- Add key here
                 onClick={() => handleNavigateToListingPage(brandItem, "brand")}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
@@ -274,6 +275,7 @@ function ShoppingHome() {
             {productList && productList.length > 0
               ? productList.map((productItem) => (
                 <ShoppingProductTile
+                  key={productItem._id} // <-- Add key here
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddToCart={handleAddtoCart}

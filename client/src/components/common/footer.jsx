@@ -51,39 +51,7 @@ function Footer() {
                 href="#"
                 className="hover:text-gray-400 font-medium transition-colors"
               >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-gray-400 font-medium transition-colors"
-              >
-                Terms & Conditions
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-gray-400 font-medium transition-colors"
-              >
-                Help & Contact
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-gray-400 font-medium transition-colors"
-              >
                 Returns
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-gray-400 font-medium transition-colors"
-              >
-                Affiliate
               </a>
             </li>
           </ul>

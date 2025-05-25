@@ -5,7 +5,6 @@ import { loginUser } from "@/store/auth-slice";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from '@react-oauth/google';
 
 const initialState = {
   email: "",
@@ -47,11 +46,6 @@ function AuthLogin() {
     });
   }
 
-  const handleGoogleLogin = (credentialResponse) => {
-    // Send credentialResponse.credential (JWT) to your backend for verification
-    // Example: dispatch(googleLogin(credentialResponse.credential))
-  };
-
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
       <div className="text-center">
@@ -74,12 +68,6 @@ function AuthLogin() {
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
-      />
-      <GoogleLogin
-        onSuccess={handleGoogleLogin}
-        onError={() => {
-          // handle error
-        }}
       />
     </div>
   );
