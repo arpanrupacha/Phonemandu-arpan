@@ -18,6 +18,7 @@ import {
 } from "@/store/admin/products-slice";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+// import CategoryManager from "@/components/admin-view/category-manager";
 
 const initialFormData = {
   image: null,
@@ -41,6 +42,7 @@ function AdminProducts() {
   const [currentEditedId, setCurrentEditedId] = useState(null);
 
   const { productList } = useSelector((state) => state.adminProducts);
+  const { categoryList } = useSelector((state) => state.adminCategories);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -109,10 +111,14 @@ function AdminProducts() {
           Add New Product
         </Button>
       </div>
+      {/* Category Management Section */}
+      {/* <CategoryManager /> */}
+      {/* Product Grid */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {productList && productList.length > 0
           ? productList.map((productItem) => (
               <AdminProductTile
+                key={productItem._id} // <-- Add this line
                 setFormData={setFormData}
                 setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                 setCurrentEditedId={setCurrentEditedId}
@@ -153,6 +159,7 @@ function AdminProducts() {
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               formControls={addProductFormElements}
               isBtnDisabled={!isFormValid()}
+              categoryList={categoryList} // Pass categoryList to CommonForm
             />
           </div>
         </SheetContent>

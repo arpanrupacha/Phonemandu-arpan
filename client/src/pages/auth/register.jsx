@@ -20,6 +20,21 @@ function AuthRegister() {
 
   function onSubmit(event) {
     event.preventDefault();
+
+    // Validation
+    if (!isValidEmail(formData.email)) {
+      toast({ title: "Invalid email format", variant: "destructive" });
+      return;
+    }
+    if (!isValidPassword(formData.password)) {
+      toast({
+        title:
+          "Password must be at least 8 characters, include one uppercase letter, one number, and one special character.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     dispatch(registerUser(formData)).then((data) => {
       if (data?.payload?.success) {
         toast({
@@ -33,6 +48,17 @@ function AuthRegister() {
         });
       }
     });
+  }
+
+  // Email validation (simple regex)
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Password validation:
+  // At least 8 chars, one uppercase, one number, one special char
+  function isValidPassword(password) {
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(password);
   }
 
   return (

@@ -32,6 +32,20 @@ function AuthLogin() {
   function onSubmit(event) {
     event.preventDefault();
 
+    // Validation
+    if (!isValidEmail(formData.email)) {
+      toast({ title: "Invalid email format", variant: "destructive" });
+      return;
+    }
+    if (!isValidPassword(formData.password)) {
+      toast({
+        title:
+          "Password must be at least 8 characters, include one uppercase letter, one number, and one special character.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     dispatch(loginUser(formData)).then((data) => {
       if (data?.payload?.success) {
         toast({
@@ -44,6 +58,17 @@ function AuthLogin() {
         });
       }
     });
+  }
+
+  // Email validation (simple regex)
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Password validation: 
+  // At least 8 chars, one uppercase, one number, one special char
+  function isValidPassword(password) {
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(password);
   }
 
   return (
@@ -59,6 +84,11 @@ function AuthLogin() {
             to="/auth/register"
           >
             Register
+          </Link>
+        </p>
+        <p className="mt-2">
+          <Link className="text-primary hover:underline" to="/auth/forgot-password">
+            Forgot Password?
           </Link>
         </p>
       </div>

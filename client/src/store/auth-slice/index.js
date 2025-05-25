@@ -74,6 +74,22 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
+export const requestPasswordReset = createAsyncThunk(
+  "auth/requestPasswordReset",
+  async (email) => {
+    const res = await axios.post("http://localhost:4000/api/auth/forgot-password", { email });
+    return res.data;
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, password }) => {
+    const res = await axios.post(`http://localhost:4000/api/auth/reset-password/${token}`, { password });
+    return res.data;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
