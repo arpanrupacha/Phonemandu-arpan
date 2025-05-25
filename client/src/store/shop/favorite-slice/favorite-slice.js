@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async (userId) => {
-    const res = await axios.get(`/api/shop/favorites/${userId}`);
+    const res = await axios.get(`http://localhost:4000/api/shop/favorites/${userId}`);
     return res.data.data;
   }
 );
@@ -12,7 +12,7 @@ export const fetchFavorites = createAsyncThunk(
 export const addFavorite = createAsyncThunk(
   "favorites/addFavorite",
   async ({ userId, productId }) => {
-    const res = await axios.post("/api/shop/favorites/add", { userId, productId });
+    const res = await axios.post("http://localhost:4000/api/shop/favorites/add", { userId, productId });
     return res.data.data;
   }
 );
@@ -20,7 +20,7 @@ export const addFavorite = createAsyncThunk(
 export const removeFavorite = createAsyncThunk(
   "favorites/removeFavorite",
   async ({ userId, productId }) => {
-    await axios.post("/api/shop/favorites/remove", { userId, productId });
+    await axios.post("http://localhost:4000/api/shop/favorites/remove", { userId, productId });
     return productId;
   }
 );
@@ -39,6 +39,7 @@ const favoriteSlice = createSlice({
       })
       .addCase(fetchFavorites.fulfilled, (state, action) => {
         state.loading = false;
+        // Store full product objects
         state.items = action.payload.map((fav) => fav.productId);
       })
       .addCase(addFavorite.fulfilled, (state, action) => {

@@ -5,6 +5,20 @@ function CheckAuth({ isAuthenticated, user, children }) {
 
   console.log(location.pathname, isAuthenticated);
 
+  // Only protect routes that need authentication
+  if (
+    !isAuthenticated &&
+    !(
+      location.pathname === "/" ||
+      location.pathname === "/shop/home" ||
+      (location.pathname.startsWith("/shop") &&
+        location.pathname !== "/shop/account" &&
+        location.pathname !== "/shop/checkout")
+    )
+  ) {
+    return <Navigate to="/auth/login" />;
+  }
+
   if (location.pathname === "/") {
     if (!isAuthenticated) {
       return <Navigate to="/auth/login" />;
@@ -15,16 +29,6 @@ function CheckAuth({ isAuthenticated, user, children }) {
         return <Navigate to="/shop/home" />;
       }
     }
-  }
-
-  if (
-    !isAuthenticated &&
-    !(
-      location.pathname.includes("/login") ||
-      location.pathname.includes("/register")
-    )
-  ) {
-    return <Navigate to="/auth/login" />;
   }
 
   if (

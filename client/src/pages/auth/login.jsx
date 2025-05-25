@@ -2,9 +2,9 @@ import CommonForm from "@/components/common/form";
 import { useToast } from "@/components/ui/use-toast";
 import { loginFormControls } from "@/config";
 import { loginUser } from "@/store/auth-slice";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 
 const initialState = {
@@ -16,6 +16,19 @@ function AuthLogin() {
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Redirect admin to dashboard, others to home
+      if (user?.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/shop/home", { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   function onSubmit(event) {
     event.preventDefault();

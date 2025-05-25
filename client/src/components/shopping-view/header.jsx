@@ -1,4 +1,4 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { HousePlug, LogOut, Menu, ShoppingCart, UserCog, Heart } from "lucide-react";
 import {
   Link,
   useLocation,
@@ -21,8 +21,10 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logoutUser } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
-import { fetchCartItems } from "@/store/shop/cart-slice";
-import { Label } from "../ui/label";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { fetchFavorites } from "@/store/shop/favorite-slice/favorite-slice";
+import { useToast } from "../ui/use-toast";
+import ShoppingProductTile from "./product-tile"; // Import your product card
 import phonemandu from "../../assets/phonemandulogo.png";
 import { Sun, Moon } from "lucide-react";
 
@@ -65,23 +67,46 @@ function MenuItems() {
     </nav>
   );
 }
-
 function HeaderRightContent() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
+  const { items: favorites } = useSelector((state) => state.favorites);
   const [openCartSheet, setOpenCartSheet] = useState(false);
+  const [openWishlistSheet, setOpenWishlistSheet] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { toast } = useToast();
 
   function handleLogout() {
     dispatch(logoutUser());
   }
 
-  useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
+  // Add to Cart handler for wishlist
+  const handleAddToCart = (product) => {
+    if (!user?.id) {
+      toast({ title: "Please login to add to cart" });
+      return;
+    }
+    dispatch(
+      addToCart({
+        userId: user.id,
+        productId: product._id,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user.id));
+        toast({ title: "Product is added to cart" });
+      }
+    });
+  };
 
-  console.log(cartItems, "sangam");
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+      dispatch(fetchFavorites(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -108,26 +133,75 @@ function HeaderRightContent() {
         />
       </Sheet>
 
+      <Sheet open={openWishlistSheet} onOpenChange={() => setOpenWishlistSheet(false)}>
+        <Button
+          onClick={() => setOpenWishlistSheet(true)}
+          variant="outline"
+          size="icon"
+          className="relative"
+        >
+          <Heart className="w-6 h-6" />
+          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+            {favorites?.length || 0}
+          </span>
+          <span className="sr-only">User wishlist</span>
+        </Button>
+        <SheetContent className="h-[80vh] overflow-y-auto">
+          <h2 className="text-lg font-bold mb-4">Your Wishlist</h2>
+          {favorites && favorites.length > 0 ? (
+            <div className="grid gap-2">
+              {favorites.map((product) => (
+                <div
+                  key={product._id}
+                  onClick={() => navigate(`/shop/listing?product=${product._id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <ShoppingProductTile
+                    product={product}
+                    handleAddToCart={() => handleAddToCart(product)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Your wishlist is empty.</p>
+          )}
+        </SheetContent>
+      </Sheet>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
+              {user?.userName ? user.userName[0].toUpperCase() : "?"}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
+          {user?.userName ? (
+            <>
+              <DropdownMenuLabel>Logged in as {user.userName}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+                <UserCog className="mr-2 h-4 w-4" />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuLabel>Not logged in</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate("/auth/login")}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Login
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -136,22 +210,22 @@ function HeaderRightContent() {
 
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "light"
-  );
+  // const [theme, setTheme] = useState(
+  //   localStorage.getItem("theme") || "light"
+  // );
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  // useEffect(() => {
+  //   if (theme === "dark") {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  //   localStorage.setItem("theme", theme);
+  // }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  // const toggleTheme = () => {
+  //   setTheme(theme === "light" ? "dark" : "light");
+  // };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b-4 bg-background dark:bg-darkBackground">
@@ -182,7 +256,7 @@ function ShoppingHeader() {
         {/* Right Section */}
         <div className="flex items-center gap-4">
           {/* Theme Toggle Button */}
-          <button
+          {/* <button
             onClick={toggleTheme}
             className="p-2 rounded-md bg-gray-200 dark:bg-gray-700"
           >
@@ -191,7 +265,7 @@ function ShoppingHeader() {
             ) : (
               <Sun className="w-5 h-5 text-yellow-400" />
             )}
-          </button>
+          </button> */}
 
           {/* Other Header Content */}
           <HeaderRightContent />

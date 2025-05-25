@@ -49,15 +49,18 @@ const brandsWithIcon = [
       />
     ),
   },
-  { id: "Realme", label: "Realme", 
+  {
+    id: "Realme", label: "Realme",
     icon: () => (
       <img
         src="https://i.ibb.co/gbt13KF1/realme.png"
         alt="Realme"
         className="w-12 h-12"
       />
-    ), },
-  { id: "Lenevo", label: "Lenevo", 
+    ),
+  },
+  {
+    id: "Lenevo", label: "Lenevo",
     icon: () => (
       <img
         src="https://i.ibb.co/d0m6Rm1K/lenevo.png"
@@ -65,8 +68,9 @@ const brandsWithIcon = [
         className="w-12 h-12"
       />
     ),
-   },
-  { id: "Asus", label: "Asus", 
+  },
+  {
+    id: "Asus", label: "Asus",
     icon: () => (
       <img
         src="https://i.ibb.co/Qvn0Qn8r/asus.png"
@@ -74,8 +78,9 @@ const brandsWithIcon = [
         className="w-12 h-12"
       />
     ),
-   },
-  { id: "Vivo", label: "Vivo", 
+  },
+  {
+    id: "Vivo", label: "Vivo",
     icon: () => (
       <img
         src="https://i.ibb.co/W4pktDJs/vivo.png"
@@ -83,8 +88,9 @@ const brandsWithIcon = [
         className="w-12 h-12"
       />
     ),
-   },
-  { id: "Oppo", label: "Oppo", 
+  },
+  {
+    id: "Oppo", label: "Oppo",
     icon: () => (
       <img
         src="https://i.ibb.co/Rp9VhnNB/oppo.jpg"
@@ -92,7 +98,7 @@ const brandsWithIcon = [
         className="w-12 h-12"
       />
     ),
-   },
+  },
 ];
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -161,35 +167,36 @@ function ShoppingHome() {
     );
   }, [dispatch]);
 
-  console.log(productList, "productList");
+
 
   useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
+
+
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[600px] overflow-hidden">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
-              <div
-                key={index}
-                className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
+            <div
+              key={index}
+              className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
-              >
-                <img
-                  src={slide?.image}
-                  alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80 flex items-center justify-center">
-                  <h1 className="text-4xl md:text-6xl font-bold text-white">
-                    Welcome to Phonemandu
-                  </h1>
-                </div>
+            >
+              <img
+                src={slide?.image}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80 flex items-center justify-center">
+                <h1 className="text-4xl md:text-6xl font-bold text-white">
+                  Welcome to Phonemandu
+                </h1>
               </div>
-            ))
+            </div>
+          ))
           : null}
         <Button
           variant="outline"
@@ -218,7 +225,7 @@ function ShoppingHome() {
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
-      <section className="py-12 bg-gray-50">
+      {/* <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -237,7 +244,7 @@ function ShoppingHome() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -266,12 +273,12 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
-                  <ShoppingProductTile
-                    handleGetProductDetails={handleGetProductDetails}
-                    product={productItem}
-                    handleAddToCart={handleAddtoCart}
-                  />
-                ))
+                <ShoppingProductTile
+                  handleGetProductDetails={handleGetProductDetails}
+                  product={productItem}
+                  handleAddToCart={handleAddtoCart}
+                />
+              ))
               : null}
           </div>
         </div>

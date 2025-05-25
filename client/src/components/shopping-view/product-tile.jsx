@@ -4,23 +4,29 @@ import { formatPrice } from "@/lib/utils";
 import StarRatingComponent from "../common/star-rating"; // Import a star rating component
 import { Heart, HeartOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addFavorite, removeFavorite } from "@/store/shop/favorite-slice/favorite-slice";
+import { addFavorite, removeFavorite, fetchFavorites } from "@/store/shop/favorite-slice/favorite-slice";
+import { toast } from "../ui/use-toast";
 
-function ShoppingProductTile({ product, handleAddToCart, handleGetProductDetails }) {
+function ShoppingProductTile({ product, handleAddToCart, handleGetProductDetails,  }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   
-  const favorites = useSelector((state) => state.favorites?.items || []);
+  const {items: favorites} = useSelector((state) => state.favorites || []);
   const isFavorite = favorites.some((fav) => fav._id === product._id);
+  
 
   function handleFavoriteClick(e) {
     e.stopPropagation();
     if (!user) return; // Optionally show login prompt
     if (isFavorite) {
-      dispatch(removeFavorite({ userId: user.id, productId: product._id }));
+      dispatch(removeFavorite({ userId: user.id, productId: product._id }))
+        .then(() => dispatch(fetchFavorites(user.id)));
+      toast({ title: `Successfully removed from favorites` });
     } else {
-      dispatch(addFavorite({ userId: user.id, productId: product._id }));
+      dispatch(addFavorite({ userId: user.id, productId: product._id }))
+        .then(() => dispatch(fetchFavorites(user.id)));
+      toast({ title: `Successfully added to favorites` });
     }
   }
 
@@ -93,12 +99,12 @@ function ShoppingProductTile({ product, handleAddToCart, handleGetProductDetails
         >
           {isFavorite ? (
             <>
-              <HeartOff className="w-5 h-5 mr-2" />
+              <HeartOff  className="w-5 h-5 mr-2" />
               Remove Favorite
             </>
           ) : (
             <>
-              <Heart className="w-5 h-5 mr-2" />
+              <Heart   className="w-5 h-5 mr-2" />
               Add to Favorite
             </>
           )}

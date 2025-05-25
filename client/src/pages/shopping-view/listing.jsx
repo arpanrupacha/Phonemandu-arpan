@@ -43,6 +43,7 @@ function ShoppingListing() {
     (state) => state.shopProducts
   );
   const { cartItems } = useSelector((state) => state.shopCart);
+  const { items: favorites } = useSelector((state) => state.favorites);
   const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
@@ -120,6 +121,12 @@ function ShoppingListing() {
     });
   }
 
+  function handleFavoriteClick(getCurrentProductId) {
+    let getFavorites = favorites || [];
+
+    
+  }
+
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -143,7 +150,9 @@ function ShoppingListing() {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  console.log(productList, "productListproductListproductList");
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
@@ -187,6 +196,7 @@ function ShoppingListing() {
                 <ShoppingProductTile
                   key={productItem._id}
                   handleAddToCart={handleAddtoCart}
+                  handleFavoriteClick={handleFavoriteClick}
                   product={productItem}
                   handleGetProductDetails={handleGetProductDetails}
                 />
