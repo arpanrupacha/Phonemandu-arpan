@@ -40,6 +40,7 @@ function AdminProducts() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const { productList } = useSelector((state) => state.adminProducts);
   const { categoryList } = useSelector((state) => state.adminCategories);
@@ -102,23 +103,36 @@ function AdminProducts() {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
+  const filteredProducts = productList
+    ? productList.filter((product) =>
+        product.title.toLowerCase().includes(searchKeyword.toLowerCase())
+      )
+    : [];
+
   console.log(formData, "productList");
 
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
+      <div className="mb-5 w-full flex justify-between items-center">
         <Button onClick={() => setOpenCreateProductsDialog(true)}>
           Add New Product
         </Button>
+        <input
+          type="text"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          placeholder="Search products..."
+          className="border rounded px-4 py-2 ml-4 w-64"
+        />
       </div>
       {/* Category Management Section */}
       {/* <CategoryManager /> */}
       {/* Product Grid */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList && productList.length > 0
-          ? productList.map((productItem) => (
+        {filteredProducts.length > 0
+          ? filteredProducts.map((productItem) => (
               <AdminProductTile
-                key={productItem._id} // <-- Add this line
+                key={productItem._id}
                 setFormData={setFormData}
                 setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                 setCurrentEditedId={setCurrentEditedId}

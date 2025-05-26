@@ -7,6 +7,7 @@ import { useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { useToast } from "@/components/ui/use-toast";
 import { formatPrice } from "@/lib/utils";
+import EsewaPayment from "@/components/payment/EsewaPayment";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -14,8 +15,6 @@ function ShoppingCheckout() {
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -60,7 +59,6 @@ function ShoppingCheckout() {
         quantity: singleCartItem?.quantity,
       })),
       addressInfo: {
-        addressId: currentSelectedAddress?._id,
         address: currentSelectedAddress?.address,
         city: currentSelectedAddress?.city,
         pincode: currentSelectedAddress?.pincode,
@@ -68,8 +66,8 @@ function ShoppingCheckout() {
         notes: currentSelectedAddress?.notes,
       },
       orderStatus: "pending",
-      paymentMethod: "COD", // Changed to Cash on Delivery
-      paymentStatus: "pending", // Payment is pending until delivery
+      paymentMethod: "COD",
+      paymentStatus: "pending",
       totalAmount: totalCartAmount,
       orderDate: new Date(),
       orderUpdateDate: new Date(),
@@ -89,6 +87,38 @@ function ShoppingCheckout() {
       }
     });
   }
+
+  // Build orderData for eSewa
+  const esewaOrderData =
+    cartItems.items.length > 0 && currentSelectedAddress
+      ? {
+          userId: user?.id,
+          cartId: cartItems?._id,
+          cartItems: cartItems.items.map((singleCartItem) => ({
+            productId: singleCartItem?.productId,
+            title: singleCartItem?.title,
+            image: singleCartItem?.image,
+            price:
+              singleCartItem?.salePrice > 0
+                ? singleCartItem?.salePrice
+                : singleCartItem?.price,
+            quantity: singleCartItem?.quantity,
+          })),
+          addressInfo: {
+            address: currentSelectedAddress?.address,
+            city: currentSelectedAddress?.city,
+            pincode: currentSelectedAddress?.pincode,
+            phone: currentSelectedAddress?.phone,
+            notes: currentSelectedAddress?.notes,
+          },
+          orderStatus: "confirmed", // eSewa payment is instant
+          paymentMethod: "eSewa",
+          paymentStatus: "paid",
+          totalAmount: totalCartAmount,
+          orderDate: new Date(),
+          orderUpdateDate: new Date(),
+        }
+      : null;
 
   return (
     <div className="flex flex-col">
@@ -122,6 +152,8 @@ function ShoppingCheckout() {
             <Button onClick={handlePlaceOrder} className="w-full bg-primary text-white">
               Place Order (Cash on Delivery)
             </Button>
+            {/* Add eSewa Payment Button */}
+            <EsewaPayment orderData={esewaOrderData} disabled={!esewaOrderData} />
           </div>
         </div>
       </div>

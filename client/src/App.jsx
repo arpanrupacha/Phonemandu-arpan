@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
+import PaymentFailurePage from "./pages/shopping-view/payment-failure";
 import SearchProducts from "./pages/shopping-view/search";
 import { fetchFavorites } from "@/store/shop/favorite-slice/favorite-slice";
 import ForgotPassword from "@/pages/auth/forgot-password";
@@ -88,6 +89,7 @@ function App() {
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
+          <Route path="payment-failure" element={<PaymentFailurePage />} />
           <Route path="search" element={<SearchProducts />} />
         </Route>
 

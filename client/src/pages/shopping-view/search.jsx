@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { fetchProductDetails } from "@/store/shop/products-slice";
 import { getSearchResults, resetSearchResults } from "@/store/shop/search-slice";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -75,8 +76,8 @@ function SearchProducts() {
     : allProducts || []; // Show all products if no search keyword
 
   return (
-    <div className="container mx-auto md:px-6 px-4 py-8">
-      <div className="flex justify-center mb-8">
+    <div className="container mx-auto md:px-6 px-4 pt-28 pb-8">
+      <div className="flex justify-center mb-12 mt-2">
         <div className="w-full flex items-center">
           <Input
             value={keyword}
@@ -84,11 +85,29 @@ function SearchProducts() {
             onChange={(event) => setKeyword(event.target.value)}
             className="py-6"
             placeholder="Search Products..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                // Optionally trigger search on Enter
+                // dispatch(getSearchResults(keyword));
+              }
+            }}
           />
+          <button
+            className="ml-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 flex items-center"
+            onClick={() => {
+              // Optionally trigger search on button click
+              // dispatch(getSearchResults(keyword));
+              // If you want to only update keyword, you can leave this empty
+            }}
+            type="button"
+          >
+            <Search className="w-5 h-5 mr-1" />
+            Search
+          </button>
         </div>
       </div>
       {!productsToDisplay.length ? (
-        <h1 className="text-5xl font-extrabold">No result found!</h1>
+        <h1 className="text-5xl font-extrabold mt-8">No result found!</h1>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {productsToDisplay.map((item) => (

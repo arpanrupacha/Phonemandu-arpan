@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
-import { formatPrice } from "@/lib/utils"; // Import the formatPrice utility
+import { formatPrice } from "@/lib/utils";
 
 function AdminProductTile({
   product,
@@ -10,7 +10,7 @@ function AdminProductTile({
   handleDelete,
 }) {
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto h-full flex flex-col justify-between">
       <div>
         <div className="relative">
           <img
@@ -22,7 +22,6 @@ function AdminProductTile({
         <CardContent>
           <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
           <div className="flex justify-between items-center mb-2">
-            {/* Formatted Price */}
             <span
               className={`${
                 product?.salePrice > 0 ? "line-through" : ""
@@ -37,21 +36,22 @@ function AdminProductTile({
             ) : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center">
-          {/* Edit Button */}
-          <Button
-            onClick={() => {
-              setOpenCreateProductsDialog(true);
-              setCurrentEditedId(product?._id);
-              setFormData(product);
-            }}
-          >
-            Edit
-          </Button>
-          {/* Delete Button */}
-          <Button onClick={() => handleDelete(product?._id)}>Delete</Button>
-        </CardFooter>
       </div>
+      {/* CardFooter is now always at the bottom */}
+      <CardFooter className="flex justify-between items-center mt-auto">
+        <Button
+          onClick={() => {
+            setOpenCreateProductsDialog(true);
+            setCurrentEditedId(product?._id);
+            setFormData(product);
+          }}
+        >
+          Edit
+        </Button>
+        <Button onClick={() => handleDelete(product?._id)} variant="destructive">
+          Delete
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

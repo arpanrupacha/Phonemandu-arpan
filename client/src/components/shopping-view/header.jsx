@@ -218,7 +218,7 @@ function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b-4 bg-background dark:bg-darkBackground">
+    <header className="fixed top-0 left-0 w-full z-50 border-b-4 bg-background dark:bg-darkBackground">
       <div className="flex h-20 items-center justify-between px-4 sm:px-6 md:px-10">
         {/* Logo */}
         <Link to="/shop/home" className="flex items-center gap-2">

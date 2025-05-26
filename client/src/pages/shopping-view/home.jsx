@@ -106,6 +106,8 @@ function ShoppingHome() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [visibleCount, setVisibleCount] = useState(15);
+
   function handleNavigateToListingPage(getCurrentItem, section) {
     sessionStorage.removeItem("filters");
     const currentFilter = {
@@ -164,7 +166,7 @@ function ShoppingHome() {
     dispatch(getFeatureImages());
   }, [dispatch]);
 
-
+  const displayedProducts = productList?.slice(0, visibleCount) || [];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -263,17 +265,25 @@ function ShoppingHome() {
             Feature Products
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productList && productList.length > 0
-              ? productList.map((productItem) => (
-                <ShoppingProductTile
-                  key={productItem._id} // <-- Add key here
-                  handleGetProductDetails={handleGetProductDetails}
-                  product={productItem}
-                  handleAddToCart={handleAddtoCart}
-                />
-              ))
-              : null}
+            {displayedProducts.map((productItem) => (
+              <ShoppingProductTile
+                key={productItem._id}
+                handleGetProductDetails={handleGetProductDetails}
+                product={productItem}
+                handleAddToCart={handleAddtoCart}
+              />
+            ))}
           </div>
+          {productList && visibleCount < productList.length && (
+            <div className="flex justify-center mt-6">
+              <button
+                className="px-6 py-2 bg-primary text-white rounded hover:bg-primary/90"
+                onClick={() => setVisibleCount(visibleCount + 15)}
+              >
+                Load More
+              </button>
+            </div>
+          )}
         </div>
       </section>
       <ProductDetailsDialog

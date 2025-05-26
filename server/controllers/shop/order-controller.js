@@ -11,6 +11,10 @@ const createOrder = async (req, res) => {
       totalAmount,
       orderDate,
       orderUpdateDate,
+      paymentMethod, // <-- add this
+      paymentStatus, // <-- add this
+      orderStatus,   // <-- add this
+      cartId,        // <-- if you want to delete cart after order
     } = req.body;
 
     const newOrder = new Order({
@@ -18,22 +22,24 @@ const createOrder = async (req, res) => {
       cartItems,
       addressInfo,
       totalAmount,
-      orderStatus: "pending", // COD orders start as pending
-      paymentMethod: "COD", // Set payment method to Cash on Delivery
-      paymentStatus: "pending", // Payment is pending until delivery
+      orderStatus: orderStatus || "pending",
+      paymentMethod: paymentMethod || "COD",
+      paymentStatus: paymentStatus || "pending",
       orderDate,
       orderUpdateDate,
+      cartId,
     });
 
     await newOrder.save();
 
     // Optionally, clear the cart after order creation
-    const getCartId = newOrder.cartId;
-    await Cart.findByIdAndDelete(getCartId);
+    if (cartId) {
+      await Cart.findByIdAndDelete(cartId);
+    }
 
     res.status(201).json({
       success: true,
-      message: "Order created successfully with Cash on Delivery.",
+      message: "Order created successfully.",
       orderId: newOrder._id,
     });
   } catch (error) {

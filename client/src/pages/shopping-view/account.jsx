@@ -3,8 +3,12 @@ import accImg from "../../assets/account.jpg";
 import Address from "@/components/shopping-view/address";
 import ShoppingOrders from "@/components/shopping-view/orders";
 import ProfileTab from "@/components/shopping-view/profile-tab";
+import { useSearchParams } from "react-router-dom";
 
 function ShoppingAccount() {
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get("tab") || "profile";
+
   return (
     <div className="flex flex-col">
       <div className="relative h-[300px] w-full overflow-hidden">
@@ -15,7 +19,7 @@ function ShoppingAccount() {
       </div>
       <div className="container mx-auto grid grid-cols-1 gap-8 py-8">
         <div className="flex flex-col rounded-lg border bg-background p-6 shadow-sm">
-          <Tabs defaultValue="profile">
+          <Tabs defaultValue={defaultTab}>
             <TabsList>
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="orders">Orders</TabsTrigger>
