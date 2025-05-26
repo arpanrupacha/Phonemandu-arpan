@@ -112,4 +112,41 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+// Update profile
+const updateProfile = async (req, res) => {
+  const userId = req.user.id;
+  const { userName, email } = req.body;
+  try {
+    await User.findByIdAndUpdate(userId, { userName, email });
+    res.json({ success: true, message: "Profile updated" });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Update failed" });
+  }
+};
+
+// Change password
+const changePassword = async (req, res) => {
+  const userId = req.user.id;
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(userId);
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.json({ success: false, message: "Current password is incorrect" });
+    }
+    user.password = await bcrypt.hash(newPassword, 12);
+    await user.save();
+    res.json({ success: true, message: "Password changed successfully" });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Password change failed" });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  authMiddleware,
+  updateProfile,
+  changePassword,
+};

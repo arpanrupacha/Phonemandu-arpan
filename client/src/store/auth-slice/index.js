@@ -90,11 +90,37 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (profileData) => {
+    const res = await axios.put(
+      "http://localhost:4000/api/auth/update-profile",
+      profileData,
+      { withCredentials: true }
+    );
+    return res.data;
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (passwordData) => {
+    const res = await axios.post(
+      "http://localhost:4000/api/auth/change-password",
+      passwordData,
+      { withCredentials: true }
+    );
+    return res.data;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {},
+    setUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder

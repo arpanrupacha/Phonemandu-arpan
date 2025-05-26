@@ -21,8 +21,8 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logoutUser } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
-import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-import { fetchFavorites } from "@/store/shop/favorite-slice/favorite-slice";
+import { addToCart, fetchCartItems, resetCart } from "@/store/shop/cart-slice";
+import { fetchFavorites, resetFavorites } from "@/store/shop/favorite-slice/favorite-slice";
 import { useToast } from "../ui/use-toast";
 import ShoppingProductTile from "./product-tile";
 import phonemandu from "../../assets/phonemandulogo.png";
@@ -82,6 +82,8 @@ function HeaderRightContent() {
 
   function handleLogout() {
     dispatch(logoutUser());
+    dispatch(resetCart());
+    dispatch(resetFavorites());
   }
 
   // Add to Cart handler for wishlist
